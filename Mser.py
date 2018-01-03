@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import os
 
 img = cv2.imread('container.jpg');
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -15,6 +16,9 @@ tolerance = 30
 # Use aspect ratio to delete bounding box
 for p in bboxes:
   box = [[p[0], p[1]], [p[0] + p[2], p[1]], [p[0], p[1] + p[3]], [p[0] + p[2], p[1] + p[3]]]
+  if p[3] > 3 * p[2] and p[3] < 4.5 * p[2]: # for number 1
+    boxs.append(box)
+    continue
   if p[3] > 2.5 * p[2] or p[3] < 1.5 * p[2]:
     continue
   boxs.append(box)
@@ -37,8 +41,9 @@ for box in box_safe:
   y1 = box[0][1]
   y2 = box[2][1]
   char = img[y1:y2, x1:x2]
-  set_path = os.path.abspath('../trainingchar1') + os.path.sep
-  # cv2.imwrite(set_path + 'test' + str(i) + '.jpg', char)
+  set_path = os.path.abspath('trainingchar1') + os.path.sep
+  cv2.imwrite(set_path + 'test' + str(i) + '.jpg', char)
+  print(i,x1, x2, y1, y2)
   points = np.array([[box[0][0], box[0][1]], [box[2][0], box[2][1]], [box[3][0], box[3][1]], [box[1][0], box[1][1]]])
   cv2.polylines(img, np.int32([points]), 1, (0, 255, 0))
   i = i + 1
