@@ -59,3 +59,6 @@ http://xidea.online/?/ideas(http://xidea.online)
 
 Wiki
 https://wiki.wdf.sap.corp/wiki/display/design/2017+Machine+Learn+Meeting
+
+python-opencv 旋转文本校正
+http://blog.csdn.net/u010122972/article/details/78436818
