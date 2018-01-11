@@ -10,16 +10,8 @@ def cvtBKchar2WHT(img_src):
 
     bk_pts_counter = cv2.countNonZero(img_src)
     tt_pts_counter = img_src.shape[0] * img_src.shape[1]
-    print("bk",bk_pts_counter)
-    print("tt",tt_pts_counter)
-    print("img_src",img_src)
-
     cv2.imshow("img_src",img_src)
     if tt_pts_counter / bk_pts_counter > 2:
-        cv2.imshow("img_src2",255 - img_src)
-        cv2.waitKey()
         return 255 - img_src
     else:
-        cv2.imshow("img_src1",img_src)
-        cv2.waitKey()
         return img_src
