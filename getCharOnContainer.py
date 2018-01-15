@@ -4,7 +4,7 @@ from operator import itemgetter
 import cv2
 
 # Read image
-img = cv2.imread('Container.jpg', cv2.CAP_OPENNI_GRAY_IMAGE)
+img = cv2.imread('c2.jpg', cv2.CAP_OPENNI_GRAY_IMAGE)
 # Convert to gray
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # Binaryzation
