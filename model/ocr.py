@@ -35,8 +35,11 @@ def ocr_net(inputs):
 
 
 class ocr_handler(object):
-    def __init__(self, learning_rate):
+    def __init__(self, learning_rate, epochs, sum_secs, inter_secs):
         self.LR = learning_rate
+        self.epochs = epochs
+        self.sum_secs = sum_secs
+        self.inter_secs = inter_secs
 
     @staticmethod
     def _build_net(inputs):
@@ -50,9 +53,9 @@ class ocr_handler(object):
         slim.learning.train(
             train_op,
             logdir,
-            number_of_steps=1000,
-            save_summaries_secs=300,
-            save_interval_secs=600)
+            number_of_steps=self.epochs,
+            save_summaries_secs=self.sum_secs,
+            save_interval_secs=self.inter_secs)
 
     def main(self, imgs, labels, logdir):
         predictions = ocr_net(imgs)
