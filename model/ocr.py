@@ -58,5 +58,5 @@ class ocr_handler(object):
             save_interval_secs=self.inter_secs)
 
     def main(self, imgs, labels, logdir):
-        predictions = ocr_net(imgs)
+        predictions = self._build_net(imgs)
         self._train_model(predictions, labels, logdir)
