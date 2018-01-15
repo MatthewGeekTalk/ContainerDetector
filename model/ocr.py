@@ -60,3 +60,7 @@ class ocr_handler(object):
     def main(self, imgs, labels, logdir):
         predictions = self._build_net(imgs)
         self._train_model(predictions, labels, logdir)
+
+
+if __name__ == '__main__':
+    ocr = ocr_handler(.001, 1000, 300, 600)
