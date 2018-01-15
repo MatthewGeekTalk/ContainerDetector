@@ -34,7 +34,7 @@ def ocr_net(inputs):
     return net
 
 
-class ocr_handler(object):
+class OcrHandler(object):
     def __init__(self, learning_rate, epochs, sum_secs, inter_secs):
         self.LR = learning_rate
         self.epochs = epochs
@@ -63,4 +63,4 @@ class ocr_handler(object):
 
 
 if __name__ == '__main__':
-    ocr = ocr_handler(.001, 1000, 300, 600)
+    ocr = OcrHandler(.001, 1000, 300, 600)
