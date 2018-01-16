@@ -1,14 +1,15 @@
 import os
 from operator import itemgetter
+from util import rotateImage
 
 import cv2
 
 # Read image
-img = cv2.imread('c2.jpg', cv2.CAP_OPENNI_GRAY_IMAGE)
+img = cv2.imread('Container.jpg', cv2.CAP_OPENNI_GRAY_IMAGE)
 # Convert to gray
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # Binaryzation
-_, gray = cv2.threshold(gray, 100, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
+_, gray = cv2.threshold(gray, 175, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
 cv2.imshow("gray", gray)
 
 # Mser
@@ -21,7 +22,7 @@ rect_temp = set()
 for idx, rect in enumerate(rects):
     flg_continue = 0
     # prune the boxes if the length-width ratio is too large than a normal character
-    if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 4:
+    if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 5:
         rect_pre = rect
         continue
 
@@ -49,7 +50,7 @@ for idx, rect in enumerate(rects):
     # generate new image as per box
     obj = gray[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]]
     obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
-    set_path = os.path.abspath('../trainingchar1') + os.path.sep
+    set_path = os.path.abspath('../trainingchar2') + os.path.sep
     cv2.imwrite(set_path + 'test' + str(idx) + '.jpg', obj)
     print("Num.", len(rect_temp), "Rects Index", idx, "==", rect)
 

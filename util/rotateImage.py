@@ -14,7 +14,6 @@ def rotate_lh(img,degree):
 
 def docRot(src_img_c):
     src_img = cv2.cvtColor(src_img_c,cv2.COLOR_RGB2GRAY)
-    # cv2.imshow("src_img",src_img)
     if(src_img is None):
         return 0
     opWidth = cv2.getOptimalDFTSize(src_img.shape[0]);
