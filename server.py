@@ -103,5 +103,6 @@ if __name__ == "__main__":
     # graph.sess_bc = sess_bc
     graph.graph_char = graph_char
     graph.sess_char = sess_char
-    print('listening on port 50060')
-    app.run(host='0.0.0.0', port=50060)
+    port = int(os.getenv("PORT", 9099))
+    # print('listening on port 50060')
+    app.run(host='0.0.0.0', port=port)
