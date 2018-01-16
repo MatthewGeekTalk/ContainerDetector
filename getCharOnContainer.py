@@ -1,8 +1,6 @@
 import os
 from operator import itemgetter
 import cv2
-import sys
-
 # sys.path.append(os.path.abspath('./util/'))
 from util import util
 
@@ -12,8 +10,6 @@ img = cv2.imread('model6c.jpg', cv2.CAP_OPENNI_GRAY_IMAGE)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # Binaryzation
 _, gray = cv2.threshold(gray, 100, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
-# cv2.imshow("gray", gray)
-
 # Mser
 mser = cv2.MSER_create()
 regions, _ = mser.detectRegions(gray)
@@ -27,7 +23,6 @@ for idx, rect in enumerate(rects):
     if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 4:
         rect_pre = rect
         continue
-
     if idx > 0:
         # prune the duplicate boxes
         # if rect == rect_pre:
@@ -45,9 +40,7 @@ for idx, rect in enumerate(rects):
             continue
         rect_temp.add(rect)
         # cv2.rectangle(img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 0, 255), 1)
-
     rect_pre = rect
-
     # generate new image as per box
     obj_gray = gray[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]]
     obj_color = img[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]]
@@ -55,9 +48,5 @@ for idx, rect in enumerate(rects):
     obj_color = cv2.resize(obj_color, (28, 28), interpolation=cv2.INTER_CUBIC)
     obj_gray = util.cvtBKchar2WHT(obj_gray)
     set_path = os.path.abspath('./noise_or_char') + os.path.sep
-    # cv2.imwrite(set_path + 'test' + str(idx) + '.jpg', obj_gray)
+    cv2.imwrite(set_path + 'test' + str(idx) + '.jpg', obj_gray)
     cv2.imwrite(set_path + 'test_color' + str(idx) + '.jpg', obj_color)
-    # print("Num.", len(rect_temp), "Rects Index", idx, "==", rect)
-
-# cv2.imshow('img', img)
-# cv2.waitKey()
