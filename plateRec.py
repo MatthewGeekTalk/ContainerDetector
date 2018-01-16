@@ -89,54 +89,6 @@ class PlateRec(object):
         self._plate_str = []
 
     def _charsegment(self):
-        # gray = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-        # ret, img_thre = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
-        # mser = cv2.MSER_create()
-        # regions, bboxes = mser.detectRegions(gray)
-        # boxs = []
-        # box_safe = []
-        # point = np.array([0, 0])
-        # index = 1
-        # tolerance = 30
-        # # Use aspect ratio to delete bounding box
-        # for p in bboxes:
-        #     p[0] = p[0] - 2
-        #     p[1] = p[1] + 2
-        #     p[2] = p[2] + 2
-        #     p[3] = p[3] + 2
-        #     box = [[p[0], p[1]], [p[0] + p[2], p[1]], [p[0], p[1] + p[3]], [p[0] + p[2], p[1] + p[3]]]
-        #     if p[3] > 2.5 * p[2] or p[3] < 1.5 * p[2]:
-        #         continue
-        #     boxs.append(box)
-        # boxs.sort()
-        # # Use first coordinate to delete bounding box
-        # for p in boxs:
-        #     if index == 1:
-        #         point = [p[0][0], p[0][1]]
-        #     if index >= 2 and p[0][0] - tolerance <= point[0] <= p[0][0] + tolerance and p[0][1] - tolerance <= point[
-        #         1] <= p[0][1] + tolerance:
-        #         continue
-        #     box_safe.append(p)
-        #     point = [p[0][0], p[0][1]]
-        #     index = index + 1
-        # # Cut bounding box from input pic and save
-        # for box in box_safe:
-        #     x1 = box[0][0]
-        #     x2 = box[1][0]
-        #
-        #     y1 = box[0][1]
-        #     y2 = box[2][1]
-        #     char = img_thre[y1:y2, x1:x2]
-        #     char = cv2.resize(char, (28, 28), interpolation=cv2.INTER_CUBIC)
-        #     # set_path = os.path.abspath('../trainingchar1') + os.path.sep
-        #     # cv2.imwrite(set_path + str(i) + '.jpg', char)
-        #     points = np.array(
-        #         [[box[0][0], box[0][1]], [box[2][0], box[2][1]], [box[3][0], box[3][1]], [box[1][0], box[1][1]]])
-        #     cv2.polylines(self.img, np.int32([points]), 1, (0, 255, 0))
-        #     self._chars .append(char)
-        # Read image
-        # img = cv2.imread(self.img, cv2.CAP_OPENNI_GRAY_IMAGE)
-        # Convert to gray
         gray = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
         # Binaryzation
         _, gray = cv2.threshold(gray, 100, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
