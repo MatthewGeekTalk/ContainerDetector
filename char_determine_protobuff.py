@@ -21,7 +21,9 @@ class CharDetermine(object):
         for img in imgs:
             if img.shape[0] > 0 and img.shape[1] > 0:
                 img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_CUBIC)
-                img = np.reshape(img, [-1, 784])
+                gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+                _, gray = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
+                img = np.reshape(gray, [-1, 784])
                 imgs_list.append(img)
 
         return imgs_list

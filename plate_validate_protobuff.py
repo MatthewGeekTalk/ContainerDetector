@@ -15,14 +15,19 @@ class PlateValidate(object):
         self.imgs_labels = []
 
     @staticmethod
-    def __get_imgs(imgs):
+    def __get_imgs(imgs,batch):
         imgs_list = []
-
-        for img in imgs:
-            img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_CUBIC)
+        if batch == 0:
+            img = cv2.resize(imgs, (28, 28), interpolation=cv2.INTER_CUBIC)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             img = np.reshape(img, [-1, 2352])
             imgs_list.append(img)
+        elif batch == 1:
+            for img in imgs:
+                img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_CUBIC)
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                img = np.reshape(img, [-1, 2352])
+                imgs_list.append(img)
         return imgs_list
 
     @staticmethod
@@ -51,9 +56,10 @@ class PlateValidate(object):
             logits = np.asarray(logits, dtype=np.int32)
             self.imgs_labels.append(list(logits))
 
-    def main(self, imgs):
+    def main(self, imgs, batch):
+        self.imgs_labels = []
         self.imgs = imgs
-        self.in_imgs = self.__get_imgs(imgs=imgs)
+        self.in_imgs = self.__get_imgs(imgs=imgs,batch=batch)
         self.__plate_validate()
         return self.imgs, self.imgs_labels
 

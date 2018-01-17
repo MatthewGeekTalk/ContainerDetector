@@ -5,7 +5,6 @@ import uuid
 import cv2
 import matplotlib.image as Image
 import tensorflow as tf
-import sys
 from Graph import Graph
 from plateRec import PlateRec
 
@@ -89,9 +88,9 @@ def root():
             return result + out_html
     return result
 
-
 if __name__ == "__main__":
     print('start')
+    print(os.path.abspath('./'))
     graph_bc = load_graph(FREEZE_MODEL_PATH_BC \
                           + '/frozen_model.pb')
     graph_char = load_graph(FREEZE_MODEL_PATH_CHAR \
