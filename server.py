@@ -52,6 +52,7 @@ def inference(file_name):
     if plate_rec._plate_str is not None:
         org_img = cv2.cvtColor(plate_rec._img, cv2.COLOR_BGR2RGB)
         new_url = '/static/%s' % os.path.basename(img_path)
+        # new_url = '/static/%s' % os.path.basename(file_name)
         image_tag = '<img src="%s" width=650px></img><p>'
         new_tag = image_tag % new_url
         Image.imsave(img_path, org_img)

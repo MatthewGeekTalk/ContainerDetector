@@ -99,11 +99,6 @@ if __name__ == '__main__':
         for key, value in char_dict.items():
             if value == result:
                 print(str(materials[i]) + ' is classify to '+ key)
-        # print(sess.run(y, feed_dict=feed_dict))
-    # print(sess.run("dense/weight:0"))
-    # print(sess.run("dense/bias:0"))
-    # print(img.shape)
-    # print(x.shape)
 
 
 
