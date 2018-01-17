@@ -12,7 +12,7 @@ from plateRec import PlateRec
 ALLOWED_EXTENSIONS = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png']
 UPLOAD_FOLDER = os.path.abspath('./static')
 
-# FREEZE_MODEL_PATH_BC = os.path.abspath('./frozen_module/bc-cnn2')
+FREEZE_MODEL_PATH_BC = os.path.abspath('./frozen_module/bc-cnn')
 FREEZE_MODEL_PATH_CHAR = os.path.abspath('./frozen_module/char-cnn')
 
 app = Flask(__name__)
@@ -92,15 +92,15 @@ def root():
 
 if __name__ == "__main__":
     print('start')
-    # graph_bc = load_graph(FREEZE_MODEL_PATH_BC \
-    #                       + '/frozen_model.pb')
+    graph_bc = load_graph(FREEZE_MODEL_PATH_BC \
+                          + '/frozen_model.pb')
     graph_char = load_graph(FREEZE_MODEL_PATH_CHAR \
                             + '/frozen_model.pb')
-    # sess_bc = tf.Session(graph=graph_bc)
+    sess_bc = tf.Session(graph=graph_bc)
     sess_char = tf.Session(graph=graph_char)
     graph = Graph()
-    # graph.graph_bc = graph_bc
-    # graph.sess_bc = sess_bc
+    graph.graph_bc = graph_bc
+    graph.sess_bc = sess_bc
     graph.graph_char = graph_char
     graph.sess_char = sess_char
     port = int(os.getenv("PORT", 9099))

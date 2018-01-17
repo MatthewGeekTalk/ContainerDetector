@@ -2,12 +2,12 @@ import sys
 import os
 import cv2
 from operator import itemgetter
-import numpy as np
+from plate_validate_protobuff import PlateValidate
 
 sys.path.insert(0, os.path.abspath('./'))
 from char_determine_protobuff import CharDetermine
 
-IS_PLATE = [0, 1]
+IS_CHAR = [0, 1]
 char_dict = {
     'A': [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
           0],
@@ -109,9 +109,6 @@ class PlateRec(object):
                 continue
 
             if idx > 0:
-                # prune the duplicate boxes
-                # if rect == rect_pre:
-                #     continue
                 if rect[0] == rect_pre[0] and rect[1] == rect_pre[1]:
                     continue
 
@@ -132,14 +129,19 @@ class PlateRec(object):
             # generate new image as per box
             obj = gray[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]]
             obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
-            # set_path = os.path.abspath('../trainingchar1') + os.path.sep
-            # cv2.imwrite(set_path + 'test' + str(idx) + '.jpg', obj)
-            # print("Num.", len(rect_temp), "Rects Index", idx, "==", rect)
             self._chars.append(obj)
         self.org_img = self.img
 
+    def _deletechars(self):
+        plate_validate = PlateValidate()
+        imgs, labels = plate_validate.main(self._chars)
+        for i, img in enumerate(imgs):
+            if labels[i] != IS_CHAR:
+                self._chars.remove(img)
+
     def main(self):
         self._charsegment()
+        self._deletechars()
         self.__detect_char(self._chars)
 
     def __detect_char(self, chars):
