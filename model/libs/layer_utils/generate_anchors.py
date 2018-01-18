@@ -89,6 +89,6 @@ if __name__ == '__main__':
     a = generate_anchors()
     print(time.time() - t)
     print(a)
-    from IPython import embed;
+    from IPython import embed
 
     embed()
