@@ -2,6 +2,9 @@
 Machine Learning Git
 This repository is for ML Team
 
+### ctpn
+https://github.com/eragonruan/text-detection-ctpn
+
 TensorFlow:
 https://www.tensorflow.org/get_started/
 
