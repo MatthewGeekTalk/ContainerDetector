@@ -78,8 +78,8 @@ char_dict = {
 if __name__ == '__main__':
     sess = tf.Session()
     dir(tf.contrib)
-    saver = tf.train.import_meta_graph('./bc-cnn2/char_classification_CNN.ckpt.meta')
-    saver.restore(sess, './bc-cnn2/char_classification_CNN.ckpt')
+    saver = tf.train.import_meta_graph('./module/char-cnn/1002/char_classification_CNN.ckpt.meta')
+    saver.restore(sess, './module/char-cnn/1002/char_classification_CNN.ckpt')
     graph = tf.get_default_graph()
     x = graph.get_tensor_by_name("x:0")
     y = graph.get_tensor_by_name("output/predict_sm:0")

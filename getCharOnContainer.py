@@ -5,7 +5,7 @@ import cv2
 from util import util
 
 # Read image
-img = cv2.imread('model6c.jpg', cv2.CAP_OPENNI_GRAY_IMAGE)
+img = cv2.imread('2.jpg', cv2.CAP_OPENNI_GRAY_IMAGE)
 # Convert to gray
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # Binaryzation
@@ -20,7 +20,7 @@ rect_temp = set()
 for idx, rect in enumerate(rects):
     flg_continue = 0
     # prune the boxes if the length-width ratio is too large than a normal character
-    if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 4:
+    if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 6:
         rect_pre = rect
         continue
     if idx > 0:

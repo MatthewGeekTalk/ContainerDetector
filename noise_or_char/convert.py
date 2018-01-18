@@ -11,6 +11,7 @@ if __name__ == '__main__':
     for i in range(len(materials)):
         path = os.path.abspath('./convert') + os.path.sep + str(materials[i])
         img = cv2.imread(path)
+        # img = util.cvtBKchar2WHT(img)
         imgs.append(img)
     imgs = util.cvtBKchar2WHTs(imgs)
     for i,img in enumerate(imgs):
