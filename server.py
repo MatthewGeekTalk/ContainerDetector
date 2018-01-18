@@ -5,7 +5,6 @@ import uuid
 import cv2
 import matplotlib.image as Image
 import tensorflow as tf
-import sys
 from Graph import Graph
 from plateRec import PlateRec
 
@@ -53,6 +52,7 @@ def inference(file_name):
     if plate_rec._plate_str is not None:
         org_img = cv2.cvtColor(plate_rec._img, cv2.COLOR_BGR2RGB)
         new_url = '/static/%s' % os.path.basename(img_path)
+        # new_url = '/static/%s' % os.path.basename(file_name)
         image_tag = '<img src="%s" width=650px></img><p>'
         new_tag = image_tag % new_url
         Image.imsave(img_path, org_img)
@@ -89,9 +89,9 @@ def root():
             return result + out_html
     return result
 
-
 if __name__ == "__main__":
     print('start')
+    print(os.path.abspath('./'))
     graph_bc = load_graph(FREEZE_MODEL_PATH_BC \
                           + '/frozen_model.pb')
     graph_char = load_graph(FREEZE_MODEL_PATH_CHAR \

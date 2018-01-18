@@ -85,13 +85,14 @@ class PlateRec(object):
         self.path = ""
         self.img = object
         self._chars = []
+        self._true_chars = []
         self.org_img = object
         self._plate_str = []
 
     def _charsegment(self):
         gray = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
         # Binaryzation
-        _, gray = cv2.threshold(gray, 100, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
+        # _, gray = cv2.threshold(gray, 100, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
         # cv2.imshow("gray", gray)
 
         # Mser
@@ -101,10 +102,11 @@ class PlateRec(object):
         rects = sorted([cv2.boundingRect(p.reshape(-1, 1, 2)) for p in regions], key=itemgetter(0, 1, 2, 3))
 
         rect_temp = set()
+        plate_validate = PlateValidate()
         for idx, rect in enumerate(rects):
             flg_continue = 0
             # prune the boxes if the length-width ratio is too large than a normal character
-            if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 4:
+            if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 6:
                 rect_pre = rect
                 continue
 
@@ -122,14 +124,15 @@ class PlateRec(object):
                     continue
 
                 rect_temp.add(rect)
-                cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 1)
-
+                # generate new image as per box
+                obj = self.img[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]]
+                obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
+                imgs, labels = plate_validate.main(obj,0)
+                # cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 1)
+                if labels[0] == IS_CHAR:
+                    cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 0, 255), 1)
+                    self._true_chars.append(obj)
             rect_pre = rect
-
-            # generate new image as per box
-            obj = gray[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]]
-            obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
-            self._chars.append(obj)
         self.org_img = self.img
 
     def _deletechars(self):
@@ -137,17 +140,16 @@ class PlateRec(object):
         imgs, labels = plate_validate.main(self._chars)
         for i, img in enumerate(imgs):
             if labels[i] != IS_CHAR:
-                self._chars.remove(img)
+                self._true_chars.append(img)
 
     def main(self):
         self._charsegment()
-        self._deletechars()
-        self.__detect_char(self._chars)
+        # self._deletechars()
+        self.__detect_char(self._true_chars)
 
     def __detect_char(self, chars):
         plate_string = ""
         char_determine = CharDetermine()
-
         if len(chars) != 0:
             imgs, labels = char_determine.main(chars)
             if len(imgs) == len(labels):
