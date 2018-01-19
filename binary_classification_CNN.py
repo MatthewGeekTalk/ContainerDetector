@@ -188,7 +188,7 @@ if __name__ == '__main__':
         sess.run(init_op)
         # writer = tf.summary.FileWriter("/nfs/users/matthew/saved_model/", sess.graph)
         writer = tf.summary.FileWriter(MODEL_PATH, sess.graph)
-        for i in range(202):
+        for i in range(502):
             imgs, labels = reader.main(batch=BATCH_SIZE)
             imgs = np.reshape(imgs, [BATCH_SIZE, 28 * 28 * 3])
             labels = np.reshape(labels, [BATCH_SIZE, 2])

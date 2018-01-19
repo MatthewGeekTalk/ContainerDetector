@@ -29,17 +29,22 @@ class img_cutter:
                 else:
                     y2 = img.shape[0]
 
+                if i == self.ratio[0] - 1  and j == 0:
+                    img_top_right = img[y1:y2, x1:x2]
+
                 imgs.append(img[y1:y2, x1:x2])
                 cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 1)
 
-        cv2.imshow('img', img)
-        return imgs
+        # cv2.imshow('img', img)
+        return imgs, img_top_right
 
 
     # Main
     def main(self):
-        img = cv2.imread('Container.jpg')
-        imgs = self.cut(img)
+        img = cv2.imread('img/KWUU_241720_0.jpg')
+        imgs, img_top_right = self.cut(img)
+        cv2.imshow('img', img_top_right)
+        cv2.waitKey(0)
         i = 0
         for img_1 in imgs:
           i = i + 1
@@ -49,7 +54,7 @@ class img_cutter:
 
 if __name__ == '__main__':
 
-    ratio = [2,2]
+    ratio = [2,5]
 
     cutter = img_cutter(ratio)
     cutter.main()

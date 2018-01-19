@@ -142,7 +142,7 @@ class deepcnn(object):
 
 if __name__ == '__main__':
     x = tf.placeholder(tf.float32, [None, 28 * 28], name='x')
-    y_ = tf.placeholder(tf.float32, [None, 34], name='y_')
+    y_ = tf.placeholder(tf.float32, [None, 35], name='y_')
     keep_prob = tf.placeholder(tf.float32, name='keep_prob')
 
     cnn = deepcnn(x)
@@ -152,7 +152,7 @@ if __name__ == '__main__':
     cnn.set_conv1_shape([5, 5, 1, 32], [32])
     cnn.set_conv2_shape([5, 5, 32, 64], [64])
     cnn.set_dense_shape([7 * 7 * 64, 1024], [1024])
-    cnn.set_output_shape([1024, 34], [34])
+    cnn.set_output_shape([1024, 35], [35])
     cnn.set_keep_prob(keep_prob)
     y_conv = cnn.build_cnn()
 
@@ -196,7 +196,7 @@ if __name__ == '__main__':
         for i in range(602):
             imgs, labels = reader.main(batch=BATCH_SIZE)
             imgs = np.reshape(imgs, [BATCH_SIZE, 28 * 28])
-            labels = np.reshape(labels, [BATCH_SIZE, 34])
+            labels = np.reshape(labels, [BATCH_SIZE, 35])
             if i % 2 == 0:
                 train_accuracy = accuracy.eval(feed_dict={x: imgs, y_: labels, keep_prob: 1.0})
                 print('step %d, training accuracy %g' % (i, train_accuracy))

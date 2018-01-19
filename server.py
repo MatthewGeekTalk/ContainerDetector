@@ -7,6 +7,8 @@ import matplotlib.image as Image
 import tensorflow as tf
 from Graph import Graph
 from plateRec import PlateRec
+from util import rotateImage
+from util import cut_img
 
 ALLOWED_EXTENSIONS = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png']
 UPLOAD_FOLDER = os.path.abspath('./static')
@@ -43,6 +45,9 @@ def inference(file_name):
     ret_string = ''
     img = cv2.imread(file_name, cv2.COLOR_BGR2RGB)
     plate_rec = PlateRec()
+    # Rotate and cut image
+    img = rotateImage(img)
+    img = cut_img.cut_img(img)
     plate_rec.img = img
     plate_rec.main()
 
