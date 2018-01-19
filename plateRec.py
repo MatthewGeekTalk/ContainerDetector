@@ -110,7 +110,6 @@ class PlateRec(object):
         rect_temp = set()
         plate_validate = PlateValidate()
         for idx, rect in enumerate(rects):
-            box = []
             flg_continue = 0
             # prune the boxes if the length-width ratio is too large than a normal character
             if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 10:
@@ -147,25 +146,22 @@ class PlateRec(object):
                     # box[2][1] = rect[1]+rect[3]
                     # box[3][0] = rect[0]+rect[2]
                     # box[3][0] = rect[1]+rect[3]
+                    x1 = int(rect[0])
+                    y1 = int(rect[1])
+                    x2 = int(rect[0]+rect[2])
+                    y2 = int(rect[1]+rect[3])
+                    box = [[x1,y1],[x2,y1],[x1,y2],[x2,y2]]
                     self.box.append(box)
             rect_pre = rect
         group_box = groupBox.groupBox(self.box)
         boxs = group_box.generate_id_boxes()
-        cv2.polylines(img, np.int32([boxs]), 1, (0, 0, 255))
         for box in boxs:
-            ys = [box[0][1], box[1][1], box[2][1], box[3][1]]
-            xs = [box[0][0], box[1][0], box[2][0], box[3][0]]
-            ys_sorted_index = np.argsort(ys)
-            xs_sorted_index = np.argsort(xs)
-
-            x1 = box[xs_sorted_index[0], 0]
-            x2 = box[xs_sorted_index[3], 0]
-
-            y1 = box[ys_sorted_index[0], 1]
-            y2 = box[ys_sorted_index[3], 1]
-            obj = self.img[y1:y2, x1:x2]
-            obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
-            self._true_chars.append(obj)
+            for bx in box:
+                points = np.array([[bx[0][0], bx[0][1]], [bx[2][0], bx[2][1]], [bx[3][0], bx[3][1]], [bx[1][0], bx[1][1]]])
+                cv2.polylines(self.img, np.int32([points]), 1, (0, 0, 255))
+                obj = self.img[bx[0][1]:bx[2][1], bx[0][0]:bx[1][0]]
+                obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
+                self._true_chars.append(obj)
         self.org_img = self.img
 
     def _deletechars(self):
