@@ -2,11 +2,11 @@
 from flask import Flask, request,jsonify
 import os
 import cv2
-from util import rotateImage
 import tensorflow as tf
 from Graph import Graph
 from plateRec import PlateRec
 from util import cut_img
+from util import rotateImage
 
 app = Flask(__name__)
 
@@ -29,8 +29,8 @@ def inference(file_name):
     img = cv2.imread(file_name, cv2.COLOR_BGR2RGB)
     plate_rec = PlateRec()
     # Rotate and cut image
-    img = rotateImage(img)
-    img = cut_img.cut_img(img)
+    # img = rotateImage(img)
+    # img = cut_img.cut_img(img)
     plate_rec.img = img
     plate_rec.main()
 

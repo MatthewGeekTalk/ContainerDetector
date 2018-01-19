@@ -1,5 +1,5 @@
 import cv2
-import rotateImage
+from util import rotateImage
 import os
 
 def cut_img(img):

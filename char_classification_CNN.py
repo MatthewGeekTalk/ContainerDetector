@@ -149,8 +149,8 @@ if __name__ == '__main__':
 
     cnn.set_name(conv1='conv1', conv2='conv2', pool1='pool1', pool2='pool2', dense='dense',
                  output='output', dropout='dropout')
-    cnn.set_conv1_shape([5, 5, 1, 32], [32])
-    cnn.set_conv2_shape([5, 5, 32, 64], [64])
+    cnn.set_conv1_shape([3, 3, 1, 32], [32])
+    cnn.set_conv2_shape([3, 3, 32, 64], [64])
     cnn.set_dense_shape([7 * 7 * 64, 1024], [1024])
     cnn.set_output_shape([1024, 35], [35])
     cnn.set_keep_prob(keep_prob)
@@ -193,7 +193,7 @@ if __name__ == '__main__':
         sess.run(init_op)
         # writer = tf.summary.FileWriter("/nfs/users/matthew/saved_model/", sess.graph)
         writer = tf.summary.FileWriter(MODEL_PATH, sess.graph)
-        for i in range(602):
+        for i in range(1002):
             imgs, labels = reader.main(batch=BATCH_SIZE)
             imgs = np.reshape(imgs, [BATCH_SIZE, 28 * 28])
             labels = np.reshape(labels, [BATCH_SIZE, 35])

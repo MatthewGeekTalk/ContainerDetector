@@ -2,8 +2,10 @@ import sys
 import os
 import cv2
 from operator import itemgetter
+import numpy as np
 from plate_validate_protobuff import PlateValidate
 from util import util
+from util import groupBox
 
 sys.path.insert(0, os.path.abspath('./'))
 from char_determine_protobuff import CharDetermine
@@ -89,13 +91,14 @@ class PlateRec(object):
         self.img = object
         self._chars = []
         self._true_chars = []
+        self.box = []
         self.org_img = object
         self._plate_str = []
 
     def _charsegment(self):
         gray = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
         # Binaryzation
-        # _, gray = cv2.threshold(gray, 100, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
+        _, gray = cv2.threshold(gray, 100, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
         # cv2.imshow("gray", gray)
 
         # Mser
@@ -107,9 +110,10 @@ class PlateRec(object):
         rect_temp = set()
         plate_validate = PlateValidate()
         for idx, rect in enumerate(rects):
+            box = []
             flg_continue = 0
             # prune the boxes if the length-width ratio is too large than a normal character
-            if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 6:
+            if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 10:
                 rect_pre = rect
                 continue
 
@@ -131,11 +135,37 @@ class PlateRec(object):
                 obj = self.img[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]]
                 obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
                 imgs, labels = plate_validate.main(obj,0)
-                # cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 1)
+                # cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 2)
                 if labels[0] == IS_CHAR:
-                    cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 0, 255), 1)
-                    self._true_chars.append(obj)
+                    # cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 0, 255), 1)
+                    # self._true_chars.append(obj)
+                    # box[0][0] = rect[0]
+                    # box[0][1] = rect[1]
+                    # box[1][0] = rect[0]+rect[2]
+                    # box[1][1] = rect[1]
+                    # box[2][0] = rect[0]
+                    # box[2][1] = rect[1]+rect[3]
+                    # box[3][0] = rect[0]+rect[2]
+                    # box[3][0] = rect[1]+rect[3]
+                    self.box.append(box)
             rect_pre = rect
+        group_box = groupBox.groupBox(self.box)
+        boxs = group_box.generate_id_boxes()
+        cv2.polylines(img, np.int32([boxs]), 1, (0, 0, 255))
+        for box in boxs:
+            ys = [box[0][1], box[1][1], box[2][1], box[3][1]]
+            xs = [box[0][0], box[1][0], box[2][0], box[3][0]]
+            ys_sorted_index = np.argsort(ys)
+            xs_sorted_index = np.argsort(xs)
+
+            x1 = box[xs_sorted_index[0], 0]
+            x2 = box[xs_sorted_index[3], 0]
+
+            y1 = box[ys_sorted_index[0], 1]
+            y2 = box[ys_sorted_index[3], 1]
+            obj = self.img[y1:y2, x1:x2]
+            obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
+            self._true_chars.append(obj)
         self.org_img = self.img
 
     def _deletechars(self):

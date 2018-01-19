@@ -40,21 +40,21 @@ class img_cutter:
 
 
     # Main
-    def main(self):
-        img = cv2.imread('img/KWUU_241720_0.jpg')
-        imgs, img_top_right = self.cut(img)
-        cv2.imshow('img', img_top_right)
-        cv2.waitKey(0)
-        i = 0
-        for img_1 in imgs:
-          i = i + 1
-          name = 'img' + str(i)
-          cv2.imshow(name, img_1)
-          cv2.waitKey(0)
+    # def main(self):
+    #     img = cv2.imread('img/KWUU_241720_0.jpg')
+    #     imgs, img_top_right = self.cut(img)
+    #     cv2.imshow('img', img_top_right)
+    #     cv2.waitKey(0)
+    #     i = 0
+    #     for img_1 in imgs:
+    #       i = i + 1
+    #       name = 'img' + str(i)
+    #       cv2.imshow(name, img_1)
+    #       cv2.waitKey(0)
 
 if __name__ == '__main__':
 
     ratio = [2,5]
 
     cutter = img_cutter(ratio)
-    cutter.main()
+    # cutter.main()
