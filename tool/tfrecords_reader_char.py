@@ -12,7 +12,7 @@ class tfrecords_reader_char:
 
     def _parse_function(self, example_proto):
         keys_to_features = {'train/image': tf.FixedLenFeature([], tf.string),
-                            'train/label': tf.FixedLenFeature([34], dtype=tf.int64)}
+                            'train/label': tf.FixedLenFeature([35], dtype=tf.int64)}
         features = tf.parse_single_example(example_proto, features=keys_to_features)
         images = tf.decode_raw(features['train/image'], tf.uint8)
         labels = tf.cast(features['train/label'], tf.int32)
