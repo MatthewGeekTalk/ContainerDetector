@@ -1,12 +1,10 @@
 import os
 from operator import itemgetter
 import cv2
-# sys.path.append(os.path.abspath('./util/'))
-from util import util
+from util import img_cutter
+from util import rotateImage
 
 def mser(img,interater):
-    # Read image
-    # img = cv2.imread('1.jpg')
     # Convert to gray
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # Binaryzation
@@ -51,15 +49,19 @@ def mser(img,interater):
         cv2.imwrite(set_path + 'test' + str(idx) + str(interater) +'.jpg', obj_gray)
         cv2.imwrite(set_path + 'test_color' + str(idx) + str(interater) + '.jpg', obj_color)
 
-# if __name__ == '__main__':
-#     materials = os.listdir(os.path.abspath('./noise_or_char/cut_white'))
-#     for i in range(len(materials)):
-#         path = os.path.abspath('./noise_or_char/cut_white') + os.path.sep + str(materials[i])
-#         img = cv2.imread(path)
-#         mser(img,i)
-#         cv2.waitKey()
-#     print('finished total '+str(i)+' pic')
-
 if __name__ == '__main__':
-        img = cv2.imread('1.jpg')
-        mser(img,1)
+    materials = os.listdir(os.path.abspath('./noise_or_char/cut_blue'))
+    for i in range(len(materials)):
+        path = os.path.abspath('./noise_or_char/cut_blue') + os.path.sep + str(materials[i])
+        img = cv2.imread(path)
+        mser(img,i)
+        cv2.waitKey()
+    print('finished total '+str(i)+' pic')
+
+# if __name__ == '__main__':
+#         img = cv2.imread('1.jpg')
+#         img = rotateImage.docRot(img)
+#         ratio = [2, 5]
+#         img_cut = img_cutter.img_cutter(ratio)
+#         _, img = img_cut.cut(img)
+#         mser(img,2)

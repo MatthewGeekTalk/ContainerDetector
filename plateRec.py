@@ -137,15 +137,6 @@ class PlateRec(object):
                 # cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 2)
                 if labels[0] == IS_CHAR:
                     # cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 0, 255), 1)
-                    # self._true_chars.append(obj)
-                    # box[0][0] = rect[0]
-                    # box[0][1] = rect[1]
-                    # box[1][0] = rect[0]+rect[2]
-                    # box[1][1] = rect[1]
-                    # box[2][0] = rect[0]
-                    # box[2][1] = rect[1]+rect[3]
-                    # box[3][0] = rect[0]+rect[2]
-                    # box[3][0] = rect[1]+rect[3]
                     x1 = int(rect[0])
                     y1 = int(rect[1])
                     x2 = int(rect[0]+rect[2])
