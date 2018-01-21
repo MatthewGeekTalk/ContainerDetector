@@ -133,6 +133,8 @@ class PlateRec(object):
                 # generate new image as per box
                 obj = self.img[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]]
                 obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
+                set_path = os.path.abspath('./util') + os.path.sep
+                cv2.imwrite(set_path + str(idx) + '.jpg', obj)
                 imgs, labels = plate_validate.main(obj,0)
                 # cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 2)
                 if labels[0] == IS_CHAR:
@@ -147,10 +149,11 @@ class PlateRec(object):
         group_box = groupBox.groupBox(self.box)
         boxs = group_box.generate_id_boxes()
         for box in boxs:
-            for bx in box:
+            # for bx in box:
+            for i, bx in enumerate(box):
                 points = np.array([[bx[0][0], bx[0][1]], [bx[2][0], bx[2][1]], [bx[3][0], bx[3][1]], [bx[1][0], bx[1][1]]])
                 cv2.polylines(self.img, np.int32([points]), 1, (0, 0, 255))
-                obj = self.img[bx[0][1]:bx[2][1], bx[0][0]:bx[1][0]]
+                obj = gray[bx[0][1]:bx[2][1], bx[0][0]:bx[1][0]]
                 obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
                 self._true_chars.append(obj)
         self.org_img = self.img

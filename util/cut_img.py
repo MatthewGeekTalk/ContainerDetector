@@ -1,23 +1,26 @@
 import cv2
-from util import rotateImage
+import rotateImage
+import img_cutter
 import os
 
 def cut_img(img):
-    img_cut = img[10:int(img.shape[1]/3),int(img.shape[0]/3):img.shape[0]-5]
+    # blue
+    # img_cut = img[84:238,1049:1771]
+    # white
+    img_cut = img[275:440, 900:1598]
     return img_cut
 if __name__ == '__main__':
-    materials = os.listdir(os.path.abspath('../white'))
+    materials = os.listdir(os.path.abspath('../util/img/WHITE'))
     set_path = os.path.abspath('../noise_or_char/cut_white') + os.path.sep
     for i in range(len(materials)):
-        path = os.path.abspath('../white') + os.path.sep + str(materials[i])
+        path = os.path.abspath('../util/img/WHITE') + os.path.sep + str(materials[i])
         img = cv2.imread(path)
-        img = rotateImage.docRot(img)
-        # blue
-        # img_cut = img[0:218, 892:1792]
-        # white
-        # img_cut = img[60:440, 694:1530]
-        img_cut = cut_img(img)
-        # img_cut = rotateImage.docRot(img_cut)
-        cv2.imwrite(set_path + 'test' + str(i) + '.jpg', img_cut)
-        # cv2.imshow('test',img_cut)
+        # cv2.imshow('test',img)
         # cv2.waitKey()
+        img = rotateImage.docRot(img)
+        ratio = [2, 5]
+        img_cut = img_cutter.img_cutter(ratio)
+        # _, img = img_cut.cut(img)
+        img = cut_img(img)
+        cv2.imwrite(set_path + 'test' + str(i) + '.jpg', img)
+

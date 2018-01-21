@@ -20,7 +20,8 @@ class tfrecords_reader:
         return images, labels
 
     def main(self, batch):
-        data_path = self.tfrecord_path + os.path.sep + 'bc.tfrecords'
+        # data_path = self.tfrecord_path + os.path.sep + 'bc.tfrecords'
+        data_path = self.tfrecord_path
         dataset = tcd.TFRecordDataset(data_path)
         dataset = dataset.map(self._parse_function)
         dataset = dataset.shuffle(buffer_size=10000)
@@ -39,15 +40,15 @@ class tfrecords_reader:
 
         return images, labels
 
-    def _load_tfrecords(self):
-        data_path = self.tfrecord_path + os.path.sep + 'bc.tfrecords'
-        filename_queue = tf.train.string_input_producer([data_path], num_epochs=1, name='queue')
-        reader = tf.TFRecordReader()
-        _, serialized_example = reader.read(filename_queue)
-        feature = {'train/image': tf.FixedLenFeature([], tf.string),
-                   'train/label': tf.FixedLenFeature([2], dtype=tf.int64)}
-        features = tf.parse_single_example(serialized_example, features=feature, name='features')
-        return features
+    # def _load_tfrecords(self):
+    #     data_path = self.tfrecord_path + os.path.sep + 'bc.tfrecords'
+    #     filename_queue = tf.train.string_input_producer([data_path], num_epochs=1, name='queue')
+    #     reader = tf.TFRecordReader()
+    #     _, serialized_example = reader.read(filename_queue)
+    #     feature = {'train/image': tf.FixedLenFeature([], tf.string),
+    #                'train/label': tf.FixedLenFeature([2], dtype=tf.int64)}
+    #     features = tf.parse_single_example(serialized_example, features=feature, name='features')
+    #     return features
 
     @staticmethod
     def _get_data_label(features, batch):

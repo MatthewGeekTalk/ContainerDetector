@@ -19,7 +19,7 @@ def mser(img,interater):
     for idx, rect in enumerate(rects):
         flg_continue = 0
         # prune the boxes if the length-width ratio is too large than a normal character
-        if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 6:
+        if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 10:
             rect_pre = rect
             continue
         if idx > 0:
@@ -50,16 +50,16 @@ def mser(img,interater):
         cv2.imwrite(set_path + 'test_color' + str(idx) + str(interater) + '.jpg', obj_color)
 
 if __name__ == '__main__':
-    materials = os.listdir(os.path.abspath('./noise_or_char/cut_blue'))
+    materials = os.listdir(os.path.abspath('./noise_or_char/cut_white'))
     for i in range(len(materials)):
-        path = os.path.abspath('./noise_or_char/cut_blue') + os.path.sep + str(materials[i])
+        path = os.path.abspath('./noise_or_char/cut_white') + os.path.sep + str(materials[i])
         img = cv2.imread(path)
         mser(img,i)
         cv2.waitKey()
     print('finished total '+str(i)+' pic')
 
 # if __name__ == '__main__':
-#         img = cv2.imread('1.jpg')
+#         img = cv2.imread('2.jpg')
 #         img = rotateImage.docRot(img)
 #         ratio = [2, 5]
 #         img_cut = img_cutter.img_cutter(ratio)

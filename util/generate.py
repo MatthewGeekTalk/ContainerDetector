@@ -124,6 +124,6 @@ def generate_imgs(numImages, imgPath, savePath, t):
         img.save(savePath + let + "_" + num + "_" + checksum + ".jpg")
 
 if __name__ == '__main__':
-    imgpath = os.path.abspath('./') + os.path.sep + 'model1a.jpg'
-    savePath = os.path.abspath('./img') + os.path.sep
-    generate_imgs(2, imgpath, savePath, 1)
+    imgpath = os.path.abspath('./') + os.path.sep + 'model6c.jpg'
+    savePath = os.path.abspath('./img/WHITE') + os.path.sep
+    generate_imgs(2, imgpath, savePath, 6)

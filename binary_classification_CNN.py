@@ -7,7 +7,7 @@ import tempfile
 sys.path.append(os.path.abspath('./tool/'))
 from tfrecords_reader import tfrecords_reader
 
-BATCH_SIZE = 50
+BATCH_SIZE = 20
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 os.environ["PYTHONUNBUFFERED"] = "0"
 
@@ -170,10 +170,12 @@ if __name__ == '__main__':
         correct_prediction = tf.cast(correct_prediction, tf.float32)
 
     accuracy = tf.reduce_mean(correct_prediction, name='accuracy_1')
-
-    path = os.path.abspath('./TFRecords')
+    # train_path = os.path.abspath('./TFRecords/')
+    train_path = 'C:\\Users\\I069405\\PycharmProjects\\ContainerDetector\\TFRecords\\bc.tfrecords'
+    validation_path = 'C:\\Users\\I069405\\PycharmProjects\\ContainerDetector\\TFRecords\\bc_v.tfrecords'
     # path = os.path.abspath('/nfs/users/matthew/workdir')
-    reader = tfrecords_reader(path)
+    reader_train = tfrecords_reader(train_path)
+    reader_validation = tfrecords_reader(validation_path)
 
     MODEL_PATH = os.path.abspath('./module/bc-cnn/500/binary_classification_CNN.ckpt')
     # path at sap gpu server
@@ -189,11 +191,14 @@ if __name__ == '__main__':
         # writer = tf.summary.FileWriter("/nfs/users/matthew/saved_model/", sess.graph)
         writer = tf.summary.FileWriter(MODEL_PATH, sess.graph)
         for i in range(1002):
-            imgs, labels = reader.main(batch=BATCH_SIZE)
+            imgs, labels = reader_train.main(batch=BATCH_SIZE)
             imgs = np.reshape(imgs, [BATCH_SIZE, 28 * 28 * 3])
             labels = np.reshape(labels, [BATCH_SIZE, 2])
-            if i % 2 == 0:
-                train_accuracy = accuracy.eval(feed_dict={x: imgs, y_: labels, keep_prob: 1.0})
+            imgs_v, labels_v = reader_validation.main(batch=BATCH_SIZE)
+            imgs_v = np.reshape(imgs_v, [BATCH_SIZE, 28 * 28 * 3])
+            labels_v = np.reshape(labels_v, [BATCH_SIZE, 2])
+            if i % 4 == 0:
+                train_accuracy = accuracy.eval(feed_dict={x: imgs_v, y_: labels_v, keep_prob: 1.0})
                 print('step %d, training accuracy %g' % (i, train_accuracy))
             train_step.run(feed_dict={x: imgs, y_: labels, keep_prob: 0.5})
             if i % 50 == 0:
