@@ -1,11 +1,13 @@
 # coding=utf-8
 from flask import Flask, request,jsonify
+import sys
 import os
 import cv2
 import tensorflow as tf
 from Graph import Graph
 from plateRec import PlateRec
-from util import cut_img
+sys.path.append(os.path.abspath('./util/'))
+from util import img_cutter
 from util import rotateImage
 
 app = Flask(__name__)
@@ -29,8 +31,10 @@ def inference(file_name):
     img = cv2.imread(file_name, cv2.COLOR_BGR2RGB)
     plate_rec = PlateRec()
     # Rotate and cut image
-    # img = rotateImage(img)
-    # img = cut_img.cut_img(img)
+    img = rotateImage.docRot(img)
+    ratio = [2, 5]
+    img_cut = img_cutter.img_cutter(ratio)
+    _,img = img_cut.cut(img)
     plate_rec.img = img
     plate_rec.main()
 

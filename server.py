@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import sys
 from flask import Flask, request
 import uuid
 import cv2
@@ -7,6 +8,7 @@ import matplotlib.image as Image
 import tensorflow as tf
 from Graph import Graph
 from plateRec import PlateRec
+sys.path.append(os.path.abspath('./util/'))
 from util import rotateImage
 from util import img_cutter
 

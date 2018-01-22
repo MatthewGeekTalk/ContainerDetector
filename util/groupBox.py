@@ -9,6 +9,7 @@ class groupBox(object):
     # Constructor
     def __init__(self, boxes):
         self.boxes = boxes
+        self.containerID = []
 
     def calculateHighMid(self, Box):
         return ( Box[2][1] + Box[0][1] ) / 2

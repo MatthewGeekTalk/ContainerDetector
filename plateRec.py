@@ -4,6 +4,7 @@ import cv2
 from operator import itemgetter
 import numpy as np
 from plate_validate_protobuff import PlateValidate
+# sys.path.append(os.path.abspath('./util/'))
 from util import util
 from util import groupBox
 
@@ -150,10 +151,15 @@ class PlateRec(object):
         boxs = group_box.generate_id_boxes()
         for box in boxs:
             # for bx in box:
-            for i, bx in enumerate(box):
-                points = np.array([[bx[0][0], bx[0][1]], [bx[2][0], bx[2][1]], [bx[3][0], bx[3][1]], [bx[1][0], bx[1][1]]])
+            # for i, bx in enumerate(box):
+            #     points = np.array([[bx[0][0], bx[0][1]], [bx[2][0], bx[2][1]], [bx[3][0], bx[3][1]], [bx[1][0], bx[1][1]]])
+            #     cv2.polylines(self.img, np.int32([points]), 1, (0, 0, 255))
+            #     obj = gray[bx[0][1]:bx[2][1], bx[0][0]:bx[1][0]]
+            #     obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
+            #     self._true_chars.append(obj)
+                points = np.array([[box[0][0], box[0][1]], [box[2][0], box[2][1]], [box[3][0], box[3][1]], [box[1][0], box[1][1]]])
                 cv2.polylines(self.img, np.int32([points]), 1, (0, 0, 255))
-                obj = gray[bx[0][1]:bx[2][1], bx[0][0]:bx[1][0]]
+                obj = gray[box[0][1]:box[2][1], box[0][0]:box[1][0]]
                 obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
                 self._true_chars.append(obj)
         self.org_img = self.img
