@@ -7,7 +7,7 @@ import tempfile
 sys.path.append(os.path.abspath('./tool/'))
 from tfrecords_reader import tfrecords_reader
 
-BATCH_SIZE = 20
+BATCH_SIZE = 50
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 os.environ["PYTHONUNBUFFERED"] = "0"
 
@@ -190,14 +190,14 @@ if __name__ == '__main__':
         sess.run(init_op)
         # writer = tf.summary.FileWriter("/nfs/users/matthew/saved_model/", sess.graph)
         writer = tf.summary.FileWriter(MODEL_PATH, sess.graph)
-        for i in range(1002):
+        for i in range(602):
             imgs, labels = reader_train.main(batch=BATCH_SIZE)
             imgs = np.reshape(imgs, [BATCH_SIZE, 28 * 28 * 3])
             labels = np.reshape(labels, [BATCH_SIZE, 2])
             imgs_v, labels_v = reader_validation.main(batch=BATCH_SIZE)
             imgs_v = np.reshape(imgs_v, [BATCH_SIZE, 28 * 28 * 3])
             labels_v = np.reshape(labels_v, [BATCH_SIZE, 2])
-            if i % 4 == 0:
+            if i % 6 == 0:
                 train_accuracy = accuracy.eval(feed_dict={x: imgs_v, y_: labels_v, keep_prob: 1.0})
                 print('step %d, training accuracy %g' % (i, train_accuracy))
             train_step.run(feed_dict={x: imgs, y_: labels, keep_prob: 0.5})
