@@ -20,7 +20,8 @@ class tfrecords_reader_char:
         return images, labels
 
     def main(self, batch):
-        data_path = self.tfrecord_path + os.path.sep + 'chars.tfrecords'
+        # data_path = self.tfrecord_path + os.path.sep + 'chars.tfrecords'
+        data_path = self.tfrecord_path
         dataset = tcd.TFRecordDataset(data_path)
         dataset = dataset.map(self._parse_function)
         dataset = dataset.shuffle(buffer_size=10000)

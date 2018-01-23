@@ -149,8 +149,8 @@ if __name__ == '__main__':
 
     cnn.set_name(conv1='conv1', conv2='conv2', pool1='pool1', pool2='pool2', dense='dense',
                  output='output', dropout='dropout')
-    cnn.set_conv1_shape([5, 5, 1, 32], [32])
-    cnn.set_conv2_shape([5, 5, 32, 64], [64])
+    cnn.set_conv1_shape([3, 3, 1, 32], [32])
+    cnn.set_conv2_shape([3, 3, 32, 64], [64])
     cnn.set_dense_shape([7 * 7 * 64, 1024], [1024])
     cnn.set_output_shape([1024, 35], [35])
     cnn.set_keep_prob(keep_prob)
@@ -175,10 +175,13 @@ if __name__ == '__main__':
     # train_writer = tf.summary.FileWriter(graph_location)
     # train_writer.add_graph(tf.get_default_graph())
 
-    path = os.path.abspath('./TFRecords')
+    # path = os.path.abspath('./TFRecords')
     # path = os.path.abspath('/nfs/users/matthew/workdir')
-    reader = tfrecords_reader_char(path)
-
+    train_path = 'C:\\Users\\I069405\\PycharmProjects\\ContainerDetector\\TFRecords\\chars.tfrecords'
+    validation_path = 'C:\\Users\\I069405\\PycharmProjects\\ContainerDetector\\TFRecords\\chars_v.tfrecords'
+    # reader = tfrecords_reader_char(path)
+    reader_train = tfrecords_reader_char(train_path)
+    reader_validation = tfrecords_reader_char(validation_path)
     MODEL_PATH = os.path.abspath('./module/char-cnn/1002/char_classification_CNN.ckpt')
     # path at sap gpu server
     # MODEL_PATH = '/nfs/users/matthew/saved_model/char_classification_CNN.ckpt'
@@ -193,12 +196,15 @@ if __name__ == '__main__':
         sess.run(init_op)
         # writer = tf.summary.FileWriter("/nfs/users/matthew/saved_model/", sess.graph)
         writer = tf.summary.FileWriter(MODEL_PATH, sess.graph)
-        for i in range(602):
-            imgs, labels = reader.main(batch=BATCH_SIZE)
+        for i in range(1002):
+            imgs, labels = reader_train.main(batch=BATCH_SIZE)
             imgs = np.reshape(imgs, [BATCH_SIZE, 28 * 28])
             labels = np.reshape(labels, [BATCH_SIZE, 35])
-            if i % 2 == 0:
-                train_accuracy = accuracy.eval(feed_dict={x: imgs, y_: labels, keep_prob: 1.0})
+            imgs_v, labels_v = reader_validation.main(batch=BATCH_SIZE)
+            imgs_v = np.reshape(imgs_v, [BATCH_SIZE, 28 * 28])
+            labels_v = np.reshape(labels_v, [BATCH_SIZE, 35])
+            if i % 6 == 0:
+                train_accuracy = accuracy.eval(feed_dict={x: imgs_v, y_: labels_v, keep_prob: 1.0})
                 print('step %d, training accuracy %g' % (i, train_accuracy))
             train_step.run(feed_dict={x: imgs, y_: labels, keep_prob: 0.5})
             if i % 200 == 0:

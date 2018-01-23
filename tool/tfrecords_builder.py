@@ -7,6 +7,8 @@ class tfrecords_builder:
     def __init__(self):
         self.PLATES_ADDR = os.path.abspath('../Postive train data')
         self.NON_PLATES_ADDR = os.path.abspath('../Negative train data')
+        # self.PLATES_ADDR = os.path.abspath('../validation/1stcnn/P')
+        # self.NON_PLATES_ADDR = os.path.abspath('../validation/1stcnn/N')
         self.IS_PLATE = [0, 1]
         self.NOT_PLATE = [1, 0]
         self.TFRECORDS_ADDR = os.path.abspath('../TFRecords')
@@ -30,6 +32,7 @@ class tfrecords_builder:
 
     def _build_tfrecords(self, imgs, labels):
         file_name = self.TFRECORDS_ADDR + os.path.sep + 'bc.tfrecords'
+        # file_name = self.TFRECORDS_ADDR + os.path.sep + 'bc_v.tfrecords'
 
         writer = tf.python_io.TFRecordWriter(file_name)
         labels = np.asarray(labels, dtype=np.int64)
