@@ -1,18 +1,21 @@
 # coding=utf-8
 import os
+import sys
 from flask import Flask, request
 import uuid
 import cv2
 import matplotlib.image as Image
 import tensorflow as tf
-import sys
 from Graph import Graph
 from plateRec import PlateRec
+sys.path.append(os.path.abspath('./util/'))
+from util import rotateImage
+from util import img_cutter
 
 ALLOWED_EXTENSIONS = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png']
 UPLOAD_FOLDER = os.path.abspath('./static')
 
-# FREEZE_MODEL_PATH_BC = os.path.abspath('./frozen_module/bc-cnn2')
+FREEZE_MODEL_PATH_BC = os.path.abspath('./frozen_module/bc-cnn')
 FREEZE_MODEL_PATH_CHAR = os.path.abspath('./frozen_module/char-cnn')
 
 app = Flask(__name__)
@@ -44,6 +47,11 @@ def inference(file_name):
     ret_string = ''
     img = cv2.imread(file_name, cv2.COLOR_BGR2RGB)
     plate_rec = PlateRec()
+    # Rotate and cut image
+    img = rotateImage.docRot(img)
+    ratio = [2, 5]
+    img_cut = img_cutter.img_cutter(ratio)
+    _,img = img_cut.cut(img)
     plate_rec.img = img
     plate_rec.main()
 
@@ -53,6 +61,7 @@ def inference(file_name):
     if plate_rec._plate_str is not None:
         org_img = cv2.cvtColor(plate_rec._img, cv2.COLOR_BGR2RGB)
         new_url = '/static/%s' % os.path.basename(img_path)
+        # new_url = '/static/%s' % os.path.basename(file_name)
         image_tag = '<img src="%s" width=650px></img><p>'
         new_tag = image_tag % new_url
         Image.imsave(img_path, org_img)
@@ -89,18 +98,18 @@ def root():
             return result + out_html
     return result
 
-
 if __name__ == "__main__":
     print('start')
-    # graph_bc = load_graph(FREEZE_MODEL_PATH_BC \
-    #                       + '/frozen_model.pb')
+    print(os.path.abspath('./'))
+    graph_bc = load_graph(FREEZE_MODEL_PATH_BC \
+                          + '/frozen_model.pb')
     graph_char = load_graph(FREEZE_MODEL_PATH_CHAR \
                             + '/frozen_model.pb')
-    # sess_bc = tf.Session(graph=graph_bc)
+    sess_bc = tf.Session(graph=graph_bc)
     sess_char = tf.Session(graph=graph_char)
     graph = Graph()
-    # graph.graph_bc = graph_bc
-    # graph.sess_bc = sess_bc
+    graph.graph_bc = graph_bc
+    graph.sess_bc = sess_bc
     graph.graph_char = graph_char
     graph.sess_char = sess_char
     port = int(os.getenv("PORT", 9099))

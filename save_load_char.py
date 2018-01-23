@@ -3,9 +3,8 @@ import cv2
 import numpy as np
 import sys
 import os
-import matplotlib.pyplot as plt
 sys.path.insert(0, os.path.abspath('./'))
-materials = os.listdir(os.path.abspath('./test_char'))
+materials = os.listdir(os.path.abspath('./chars/0'))
 char_dict = {
     'A': [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
           0],
@@ -79,14 +78,14 @@ char_dict = {
 if __name__ == '__main__':
     sess = tf.Session()
     dir(tf.contrib)
-    saver = tf.train.import_meta_graph('./bc-cnn2/char_classification_CNN.ckpt.meta')
-    saver.restore(sess, './bc-cnn2/char_classification_CNN.ckpt')
+    saver = tf.train.import_meta_graph('./module/char-cnn/1002/char_classification_CNN.ckpt.meta')
+    saver.restore(sess, './module/char-cnn/1002/char_classification_CNN.ckpt')
     graph = tf.get_default_graph()
     x = graph.get_tensor_by_name("x:0")
     y = graph.get_tensor_by_name("output/predict_sm:0")
     keep_prob = graph.get_tensor_by_name("keep_prob:0")
     for i in range(len(materials)):
-        path = os.path.abspath('./test_char') + os.path.sep + str(materials[i])
+        path = os.path.abspath('./chars/0') + os.path.sep + str(materials[i])
         img = cv2.imread(path,0)
         # print(img.shape)
         # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -100,11 +99,6 @@ if __name__ == '__main__':
         for key, value in char_dict.items():
             if value == result:
                 print(str(materials[i]) + ' is classify to '+ key)
-        # print(sess.run(y, feed_dict=feed_dict))
-    # print(sess.run("dense/weight:0"))
-    # print(sess.run("dense/bias:0"))
-    # print(img.shape)
-    # print(x.shape)
 
 
 

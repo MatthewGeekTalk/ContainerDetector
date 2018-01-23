@@ -3,80 +3,86 @@ import os
 import cv2
 from operator import itemgetter
 import numpy as np
+from plate_validate_protobuff import PlateValidate
+# sys.path.append(os.path.abspath('./util/'))
+from util import util
+from util import groupBox
 
 sys.path.insert(0, os.path.abspath('./'))
 from char_determine_protobuff import CharDetermine
 
-IS_PLATE = [0, 1]
+IS_CHAR = [0, 1]
 char_dict = {
     'A': [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'B': [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'C': [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'D': [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'E': [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'F': [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'G': [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'H': [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'J': [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'K': [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'L': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'M': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'N': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'P': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'Q': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'R': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'S': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'T': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'U': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'V': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'W': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'X': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'Y': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     'Z': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     '0': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     '1': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     '2': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     '3': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-          0],
+          0,0],
     '4': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-          0],
+          0,0],
     '5': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
-          0],
+          0,0],
     '6': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-          0],
+          0,0],
     '7': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-          0],
+          0,0],
     '8': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-          0],
+          0,0],
     '9': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          1],
+          1,0],
+    'I': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 1],
 }
 
 
@@ -85,6 +91,8 @@ class PlateRec(object):
         self.path = ""
         self.img = object
         self._chars = []
+        self._true_chars = []
+        self.box = []
         self.org_img = object
         self._plate_str = []
 
@@ -101,17 +109,15 @@ class PlateRec(object):
         rects = sorted([cv2.boundingRect(p.reshape(-1, 1, 2)) for p in regions], key=itemgetter(0, 1, 2, 3))
 
         rect_temp = set()
+        plate_validate = PlateValidate()
         for idx, rect in enumerate(rects):
             flg_continue = 0
             # prune the boxes if the length-width ratio is too large than a normal character
-            if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 4:
+            if rect[2] / rect[3] > 1.5 or rect[3] / rect[2] > 10:
                 rect_pre = rect
                 continue
 
             if idx > 0:
-                # prune the duplicate boxes
-                # if rect == rect_pre:
-                #     continue
                 if rect[0] == rect_pre[0] and rect[1] == rect_pre[1]:
                     continue
 
@@ -125,27 +131,55 @@ class PlateRec(object):
                     continue
 
                 rect_temp.add(rect)
-                cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 1)
-
+                # generate new image as per box
+                obj = self.img[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]]
+                obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
+                set_path = os.path.abspath('./util') + os.path.sep
+                cv2.imwrite(set_path + str(idx) + '.jpg', obj)
+                imgs, labels = plate_validate.main(obj,0)
+                # cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 2)
+                if labels[0] == IS_CHAR:
+                    # cv2.rectangle(self.img, rect[0:2], (rect[0] + rect[2], rect[1] + rect[3]), (0, 0, 255), 1)
+                    x1 = int(rect[0])
+                    y1 = int(rect[1])
+                    x2 = int(rect[0]+rect[2])
+                    y2 = int(rect[1]+rect[3])
+                    box = [[x1,y1],[x2,y1],[x1,y2],[x2,y2]]
+                    self.box.append(box)
             rect_pre = rect
-
-            # generate new image as per box
-            obj = gray[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]]
-            obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
-            # set_path = os.path.abspath('../trainingchar1') + os.path.sep
-            # cv2.imwrite(set_path + 'test' + str(idx) + '.jpg', obj)
-            # print("Num.", len(rect_temp), "Rects Index", idx, "==", rect)
-            self._chars.append(obj)
+        group_box = groupBox.groupBox(self.box)
+        boxs = group_box.generate_id_boxes()
+        for box in boxs:
+            # for bx in box:
+            # for i, bx in enumerate(box):
+            #     points = np.array([[bx[0][0], bx[0][1]], [bx[2][0], bx[2][1]], [bx[3][0], bx[3][1]], [bx[1][0], bx[1][1]]])
+            #     cv2.polylines(self.img, np.int32([points]), 1, (0, 0, 255))
+            #     obj = gray[bx[0][1]:bx[2][1], bx[0][0]:bx[1][0]]
+            #     obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
+            #     self._true_chars.append(obj)
+                points = np.array([[box[0][0], box[0][1]], [box[2][0], box[2][1]], [box[3][0], box[3][1]], [box[1][0], box[1][1]]])
+                cv2.polylines(self.img, np.int32([points]), 1, (0, 0, 255))
+                obj = gray[box[0][1]:box[2][1], box[0][0]:box[1][0]]
+                obj = cv2.resize(obj, (28, 28), interpolation=cv2.INTER_CUBIC)
+                self._true_chars.append(obj)
         self.org_img = self.img
+
+    def _deletechars(self):
+        plate_validate = PlateValidate()
+        imgs, labels = plate_validate.main(self._chars)
+        for i, img in enumerate(imgs):
+            if labels[i] != IS_CHAR:
+                self._true_chars.append(img)
 
     def main(self):
         self._charsegment()
-        self.__detect_char(self._chars)
+        # convert black and white color
+        self._true_chars = util.cvtBKchar2WHTs(self._true_chars)
+        self.__detect_char(self._true_chars)
 
     def __detect_char(self, chars):
         plate_string = ""
         char_determine = CharDetermine()
-
         if len(chars) != 0:
             imgs, labels = char_determine.main(chars)
             if len(imgs) == len(labels):

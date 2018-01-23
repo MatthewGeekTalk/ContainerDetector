@@ -4,10 +4,10 @@ import cv2
 import numpy as np
 from Graph import Graph
 
-FREEZE_MODEL_PATH = os.path.abspath('../PlateRec/frozen_module/char-cnn')
+FREEZE_MODEL_PATH = os.path.abspath('./frozen_module/bc-cnn2')
 
 
-class CharDetermine(object):
+class PlateValidate(object):
     def __init__(self):
         dir(tf.contrib)
         self.imgs = []
@@ -15,17 +15,19 @@ class CharDetermine(object):
         self.imgs_labels = []
 
     @staticmethod
-    def __get_imgs(imgs):
+    def __get_imgs(imgs,batch):
         imgs_list = []
-
-        for img in imgs:
-            if img.shape[0] > 0 and img.shape[1] > 0:
+        if batch == 0:
+            img = cv2.resize(imgs, (28, 28), interpolation=cv2.INTER_CUBIC)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = np.reshape(img, [-1, 2352])
+            imgs_list.append(img)
+        elif batch == 1:
+            for img in imgs:
                 img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_CUBIC)
-                # gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-                # _, gray = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)
-                img = np.reshape(img, [-1, 784])
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                img = np.reshape(img, [-1, 2352])
                 imgs_list.append(img)
-
         return imgs_list
 
     @staticmethod
@@ -36,36 +38,40 @@ class CharDetermine(object):
 
         with tf.Graph().as_default() as graph:
             tf.import_graph_def(graph_def, name='prefix')
-
         return graph
 
-    def __char_detection(self):
-        # graph = self.__load_graph(FREEZE_MODEL_PATH + \
-        #                           '/frozen_model.pb')
+    def __plate_validate(self):
         graph = Graph()
-
-        # with tf.Session(graph=graph.graph_char) as sess:
-        sess = graph.sess_char
+        sess = graph.sess_bc
         x = sess.graph.get_tensor_by_name('prefix/x:0')
         y = sess.graph.get_tensor_by_name('prefix/output/predict_sm:0')
         keep_prob = sess.graph.get_tensor_by_name('prefix/keep_prob:0')
 
         for i in range(len(self.in_imgs)):
             logits = sess.run(y, feed_dict={
-                x: self.in_imgs[i],
-                keep_prob: 1.0
+                x: self.in_imgs[i], keep_prob: 1.0
             })
 
-            logits = np.reshape(logits, [35])
+            logits = np.reshape(logits, [2])
             logits = np.asarray(logits, dtype=np.int32)
             self.imgs_labels.append(list(logits))
 
-    def main(self, imgs):
+    def main(self, imgs, batch):
+        self.imgs_labels = []
         self.imgs = imgs
-        self.in_imgs = self.__get_imgs(imgs=imgs)
-        self.__char_detection()
+        self.in_imgs = self.__get_imgs(imgs=imgs,batch=batch)
+        self.__plate_validate()
         return self.imgs, self.imgs_labels
 
 
 if __name__ == '__main__':
-    pass
+    img_list = []
+    path = input('Please input your image path:')
+
+    img = cv2.imread(path, cv2.COLOR_BGR2RGB)
+    img_list.append(img)
+
+    plate_validate = PlateValidate()
+    imgs, labels = plate_validate.main(img_list)
+
+    print(labels)
