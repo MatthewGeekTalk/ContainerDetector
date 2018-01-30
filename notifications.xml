@@ -1,5 +1,5 @@
 <application>
-  <component name="NotificationConfiguration">
+  <component name="NotificationConfiguration" showBalloons="false">
     <notification groupId="Debugger messages" displayType="TOOL_WINDOW" />
     <notification groupId="Find in Path" displayType="TOOL_WINDOW" />
     <notification groupId="Find Problems" displayType="STICKY_BALLOON" />
