@@ -5,6 +5,9 @@ This repository is for ML Team
 ### ctpn
 https://github.com/eragonruan/text-detection-ctpn
 
+### RNN
+https://zybuluo.com/hanbingtao/note/541458
+
 TensorFlow:
 https://www.tensorflow.org/get_started/
 
