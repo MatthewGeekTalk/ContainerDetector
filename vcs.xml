@@ -30,6 +30,10 @@
           <option name="url" value="https://github.com/MatthewGeekTalk/Attention_OCR.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/bear63/sceneReco.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="C:\Users\I310855\PycharmProjects" />
